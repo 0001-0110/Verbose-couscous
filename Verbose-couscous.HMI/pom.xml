@@ -8,9 +8,16 @@
     </parent>
     <artifactId>Verbose-couscous.HMI</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Verbose-couscous.BLL</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
-        <exec.mainClass>hr.algebra.verbose_couscous.hmi.VerboseCouscousHMI</exec.mainClass>
+        <exec.mainClass>hr.algebra.verbose_couscous.hmi.Main</exec.mainClass>
     </properties>
 </project>

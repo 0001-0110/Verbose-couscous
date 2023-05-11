@@ -8,9 +8,10 @@ package hr.algebra.verbose_couscous.hmi;
  *
  * @author remi
  */
-public class VerboseCouscousHMI {
+public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        MainFrame mainFrame = new MainFrame();
+        mainFrame.main(args);
     }
 }
