@@ -26,7 +26,8 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
 
     private DatabaseService databaseService;
 
-    // Keep track of all the models already loaded to avoid loading twice the same one
+    // Keep track of all the models already loaded to avoid loading twice the same
+    // one
     // Help keep data consistent event when used across the whole app
     protected Map<Integer, T> models;
 
@@ -49,8 +50,7 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
     }
 
     // Create the prepared statements to call the procedures
-    private String getProcedure(String procedureName, int argumentCount)
-    {
+    private String getProcedure(String procedureName, int argumentCount) {
         if (argumentCount <= 0)
             return String.format("", procedureName);
         return String.format("{ CALL %s }", procedureName, "(" + String.join(",", "?".repeat(argumentCount)) + ")");
@@ -63,6 +63,8 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
     }
 
     private Collection<T> replaceIfDuplicates(Collection<T> models) {
+        for (T model : models)
+            this.models.putIfAbsent(model.Id, model);
         return models.stream().map(this::replaceIfDuplicate).toList();
     }
 
@@ -73,11 +75,12 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
     }
 
     private T replaceIfDuplicate(T model) {
+        models.putIfAbsent(model.Id, model);
         return models.containsKey(model.Id) ? models.get(model.Id) : model;
     }
 
     protected Optional<Collection<T>> _selectAll(DatabaseService.ResultHandler<Collection<T>> resultHandler) {
-        return replaceIfDuplicates(databaseService.sendQuery(selectAllProcedure, statement -> {}, resultHandler));
+        return replaceIfDuplicates(databaseService.sendQuery(selectAllProcedure, statement -> { }, resultHandler));
     }
 
     protected Optional<T> _selectById(int id, ResultHandler<T> resultHandler) {
@@ -86,7 +89,8 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
         return replaceIfDuplicate(databaseService.sendQuery(selectByIdProcedure, statement -> statement.setInt(1, id), resultHandler));
     }
 
-    // This is not the best solution, and it would be so much better to use a SQL WHERE clause, 
+    // This is not the best solution, and it would be so much better to use a SQL
+    // WHERE clause,
     // but I just don't know how to do that
     @Override
     public Collection<T> selectWhere(Predicate<T> predicate) {
