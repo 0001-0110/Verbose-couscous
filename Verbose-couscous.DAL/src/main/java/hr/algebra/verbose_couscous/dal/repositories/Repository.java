@@ -56,37 +56,39 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
         return String.format("{ CALL %s }", procedureName, "(" + String.join(",", "?".repeat(argumentCount)) + ")");
     }
 
-    private Optional<Collection<T>> replaceIfDuplicates(Optional<Collection<T>> models) {
+    private Optional<Collection<T>> replaceDuplicates(Optional<Collection<T>> models) {
         if (models.isEmpty())
             return Optional.empty();
-        return Optional.of(replaceIfDuplicates(models.get()));
+        return Optional.of(replaceDuplicates(models.get()));
     }
 
-    private Collection<T> replaceIfDuplicates(Collection<T> models) {
-        for (T model : models)
-            this.models.putIfAbsent(model.Id, model);
-        return models.stream().map(this::replaceIfDuplicate).toList();
+    private Collection<T> replaceDuplicates(Collection<T> models) {
+        return models.stream().map(this::replaceDuplicate).toList();
     }
 
-    private Optional<T> replaceIfDuplicate(Optional<T> model) {
+    private Optional<T> replaceDuplicate(Optional<T> model) {
         if (model.isEmpty())
             return Optional.empty();
-        return Optional.of(replaceIfDuplicate(model.get()));
+        return Optional.of(replaceDuplicate(model.get()));
     }
 
-    private T replaceIfDuplicate(T model) {
-        models.putIfAbsent(model.Id, model);
-        return models.containsKey(model.Id) ? models.get(model.Id) : model;
+    private T replaceDuplicate(T model) {
+        if (models.containsKey(model.Id))
+            // If the model already exists, get the one already in use
+            return models.get(model.Id);
+        // If not, put the new one aas the model responsible for this id and return this one
+        models.put(model.Id, model);
+        return model;
     }
 
     protected Optional<Collection<T>> _selectAll(DatabaseService.ResultHandler<Collection<T>> resultHandler) {
-        return replaceIfDuplicates(databaseService.sendQuery(selectAllProcedure, statement -> { }, resultHandler));
+        return replaceDuplicates(databaseService.sendQuery(selectAllProcedure, statement -> { }, resultHandler));
     }
 
     protected Optional<T> _selectById(int id, ResultHandler<T> resultHandler) {
         if (models.containsKey(id))
             return Optional.of(models.get(id));
-        return replaceIfDuplicate(databaseService.sendQuery(selectByIdProcedure, statement -> statement.setInt(1, id), resultHandler));
+        return replaceDuplicate(databaseService.sendQuery(selectByIdProcedure, statement -> statement.setInt(1, id), resultHandler));
     }
 
     // This is not the best solution, and it would be so much better to use a SQL
