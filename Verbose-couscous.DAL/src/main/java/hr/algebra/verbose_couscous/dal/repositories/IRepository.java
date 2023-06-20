@@ -9,19 +9,19 @@ import java.util.Collection;
  *
  * @author remi
  */
-public interface IRepository<T extends Model>
-{
-    public Collection<T> selectAll();
+public interface IRepository<T extends Model> {
 
-    public Optional<T> selectById(int Id);
+    Collection<T> selectAll();
 
-    public Collection<T> selectWhere(Predicate<T> predicate);
+    Optional<T> selectById(int Id);
 
-    public T insert(T model);
+    Collection<T> selectWhere(Predicate<T> predicate);
 
-    public void update(T model);
+    T insert(T model);
 
-    public void delete(int id);
+    void update(T model);
 
-    public void clear();
+    void delete(int id);
+
+    void clear();
 }

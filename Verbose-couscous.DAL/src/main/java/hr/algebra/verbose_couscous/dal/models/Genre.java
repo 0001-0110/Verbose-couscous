@@ -4,6 +4,8 @@
  */
 package hr.algebra.verbose_couscous.dal.models;
 
+import java.util.Collection;
+
 /**
  *
  * @author remi
@@ -12,10 +14,14 @@ public class Genre extends Model {
 
     public String Name;
 
-    public ManyToManyModelRelation<ModelRelation<Movie, Genre>, Movie, Genre> Movies;
+    private final ManyToManyModelRelation<ModelRelation<Movie, Genre>, Movie, Genre> movieRelations;
+    public Collection<Movie> getMovies() {
+        return movieRelations.getRelatedModels1(Id);
+    }
 
     public Genre(int id, String name) {
         super(id);
         Name = name;
+        movieRelations = new MovieGenreRelations();
     }
 }

@@ -22,6 +22,8 @@ import hr.algebra.verbose_couscous.dal.services.DatabaseService;
  */
 public class RepositoryCollection implements IRepositoryCollection {
 
+    public final static RepositoryCollection Instance = new RepositoryCollection();
+
     // This repository collection is absolutely awful.
     // It is hard to maintain and without any modularity
     // I tried using types to pick the right repository, but type erasure was a
@@ -44,7 +46,7 @@ public class RepositoryCollection implements IRepositoryCollection {
 
     private final Map<Class<? extends Model>, IRepository<? extends Model>> repositories;
 
-    public RepositoryCollection() {
+    private RepositoryCollection() {
         DatabaseService databaseService = new DatabaseService();
 
         userRepository = new UserRepository(databaseService);

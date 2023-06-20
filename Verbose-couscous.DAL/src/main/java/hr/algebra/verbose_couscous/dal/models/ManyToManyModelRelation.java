@@ -7,6 +7,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import hr.algebra.verbose_couscous.dal.repositories.IRepository;
+import hr.algebra.verbose_couscous.dal.repositories.IRepositoryCollection;
+import hr.algebra.verbose_couscous.dal.repositories.RepositoryCollection;
 
 /**
  *
@@ -14,6 +16,7 @@ import hr.algebra.verbose_couscous.dal.repositories.IRepository;
  */
 public abstract class ManyToManyModelRelation<TRelation extends ModelRelation<TModel1, TModel2>, TModel1 extends Model, TModel2 extends Model> {
 
+    protected final static IRepositoryCollection repositoryCollection = RepositoryCollection.Instance;
     private IRepository<TRelation> repository;
 
     public ManyToManyModelRelation(IRepository<TRelation> repository) {
@@ -28,11 +31,11 @@ public abstract class ManyToManyModelRelation<TRelation extends ModelRelation<TM
         return result;
     }
 
-    protected Collection<TModel1> getRelatedModels1(Predicate<TRelation> predicate) {
-        return getRelatedModels(predicate, TRelation::getRelatedModel1);
+    protected Collection<TModel1> getRelatedModels1(int idModel2) {
+        return getRelatedModels(relation -> relation.IdModel2 == idModel2, TRelation::getRelatedModel1);
     }
 
-    protected Collection<TModel2> getRelatedModels2(Predicate<TRelation> predicate) {
-        return getRelatedModels(predicate, TRelation::getRelatedModel2);
+    protected Collection<TModel2> getRelatedModels2(int idModel1) {
+        return getRelatedModels(relation -> relation.IdModel1 == idModel1, TRelation::getRelatedModel2);
     }
 }

@@ -2,6 +2,7 @@ package hr.algebra.verbose_couscous.dal.models;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 
 /**
  *
@@ -22,11 +23,23 @@ public class Movie extends Model {
 
     public int Year;
 
-    public ManyToManyModelRelation<ModelRelation<Movie, Genre>, Movie, Genre> Genres;
+    private final MovieGenreRelations genreRelations;
 
-    public ManyToManyModelRelation<ModelRelation<Movie, Actor>, Movie, Actor> Actors;
+    public Collection<Genre> getGenres() {
+        return genreRelations.getRelatedGenres(Id);
+    }
 
-    public ManyToManyModelRelation<ModelRelation<Movie, Director>, Movie, Director> Directors;
+    private final MovieActorRelations actorRelations;
+
+    public Collection<Actor> getActors() {
+        return actorRelations.getRelatedActors(Id);
+    }
+
+    private final MovieDirectorRelations directorRelations;
+
+    public Collection<Director> getDirectors() {
+        return directorRelations.getRelatedDirectors(Id);
+    }
 
     public Movie(int id, String name, String description, String published, int duration) {
         this(id, name, description, LocalDateTime.parse(published, dateFormatter), duration);
@@ -38,7 +51,10 @@ public class Movie extends Model {
         Description = description;
         PublishedDateTime = published;
         Duration = duration;
-        Year = PublishedDateTime.getYear(); 
+        Year = PublishedDateTime.getYear();
+        genreRelations = new MovieGenreRelations();
+        actorRelations = new MovieActorRelations();
+        directorRelations = new MovieDirectorRelations();
     }
 
     public String getPublishedDate() {
