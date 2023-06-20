@@ -9,7 +9,7 @@ import hr.algebra.verbose_couscous.dal.repositories.IRepositoryCollection;
 public class MovieDirectorRelation extends PersonModelRelation<Movie, Director> {
 
     public MovieDirectorRelation(IRepositoryCollection repositoryCollection, int id, int idMovie, int idDirector) {
-        super(repositoryCollection, id, idMovie, repositoryCollection.getMovieRepository(), idDirector, repositoryCollection.getDirectorRepository());
+        super(repositoryCollection, id, idMovie, repositoryCollection.getRepository(Movie.class), idDirector, repositoryCollection.getRepository(Director.class));
     }
 
     public Movie getMovie() {

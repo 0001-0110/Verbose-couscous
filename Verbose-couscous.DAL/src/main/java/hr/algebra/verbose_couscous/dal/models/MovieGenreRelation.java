@@ -5,7 +5,7 @@ import hr.algebra.verbose_couscous.dal.repositories.IRepositoryCollection;
 public class MovieGenreRelation extends ModelRelation<Movie, Genre> {
 
     public MovieGenreRelation(IRepositoryCollection repositoryCollection, int id, int idMovie, int idGenre) {
-        super(repositoryCollection, id, idMovie, repositoryCollection.getMovieRepository(), idGenre, repositoryCollection.getGenreRepository());
+        super(repositoryCollection, id, idMovie, repositoryCollection.getRepository(Movie.class), idGenre, repositoryCollection.getRepository(Genre.class));
     }
 
     public Movie getMovie() {

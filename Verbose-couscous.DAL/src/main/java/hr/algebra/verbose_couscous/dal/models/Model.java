@@ -1,12 +1,10 @@
 package hr.algebra.verbose_couscous.dal.models;
 
-import java.awt.datatransfer.Transferable;
-
 /**
  *
  * @author remi
  */
-public abstract class Model /*implements Transferable*/ {
+public abstract class Model {
 
     public int Id;
 

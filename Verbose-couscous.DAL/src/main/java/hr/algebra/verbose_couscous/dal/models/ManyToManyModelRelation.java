@@ -17,9 +17,6 @@ public abstract class ManyToManyModelRelation<TRelation extends ModelRelation<TM
     private IRepository<TRelation> repository;
 
     public ManyToManyModelRelation(IRepository<TRelation> repository) {
-        // Type erasure is the worst thing ever, give me back my C#
-        //repository = (IRepository<ModelRelation<TModel1, TModel2>>)repositoryCollection.getRepository(new TypeReference(ModelRelation.class, new TypeReference(type1), new TypeReference(type2))).get();
-        //repository = (IRepository<ModelRelation<TModel1, TModel2>>)repositoryCollection.getRepository(String.format("ModelRelation<%s, %s>", type1.getSimpleName(), type2.getSimpleName())).get();
         this.repository = repository;
     }
 
