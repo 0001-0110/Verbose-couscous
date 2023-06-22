@@ -43,18 +43,19 @@ public class DatabaseService {
 
     public interface StatementInitializer extends SQLCheckedConsumer<CallableStatement> { }
 
-    public String serverName;
-    public String databaseName;
-    public String username;
-    public String password;
-
+    public final String PROPERTIESPATH = "/config/database.properties"; 
+    public final String SERVERNAME = "SERVER";
+    public final String DATABASENAME = "DATABASE";
+    public final String USERNAME = "USERNAME";
+    public final String PASSWORD = "PASSWORD";
+    
     private static final Properties properties = new Properties();
     private DataSource dataSource;
 
     public DatabaseService() {
 
-        // TODO get the path
-        try (InputStream inputStream = DatabaseService.class.getResourceAsStream("")) {
+        // Load the properties from the config file
+        try (InputStream inputStream = DatabaseService.class.getResourceAsStream(PROPERTIESPATH)) {
             properties.load(inputStream);
         } catch (IOException exception) {
             exception.printStackTrace();
@@ -66,10 +67,10 @@ public class DatabaseService {
 
     private DataSource getDataSource() {
         SQLServerDataSource dataSource = new SQLServerDataSource();
-        dataSource.setServerName(properties.getProperty(serverName));
-        dataSource.setDatabaseName(properties.getProperty(databaseName));
-        dataSource.setUser(properties.getProperty(username));
-        dataSource.setPassword(properties.getProperty(password));
+        dataSource.setServerName(properties.getProperty(SERVERNAME));
+        dataSource.setDatabaseName(properties.getProperty(DATABASENAME));
+        dataSource.setUser(properties.getProperty(USERNAME));
+        dataSource.setPassword(properties.getProperty(PASSWORD));
         return dataSource;
     }
 
