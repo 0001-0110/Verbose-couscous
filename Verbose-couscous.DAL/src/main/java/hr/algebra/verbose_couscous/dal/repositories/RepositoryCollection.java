@@ -22,7 +22,7 @@ import hr.algebra.verbose_couscous.dal.services.DatabaseService;
  */
 public class RepositoryCollection implements IRepositoryCollection {
 
-    public final static RepositoryCollection Instance = new RepositoryCollection();
+    public static final RepositoryCollection Instance = new RepositoryCollection();
 
     // This repository collection is absolutely awful.
     // It is hard to maintain and without any modularity
