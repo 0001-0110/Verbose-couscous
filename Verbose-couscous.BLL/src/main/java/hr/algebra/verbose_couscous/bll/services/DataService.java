@@ -6,17 +6,20 @@ package hr.algebra.verbose_couscous.bll.services;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import hr.algebra.verbose_couscous.dal.models.Model;
 import hr.algebra.verbose_couscous.dal.repositories.IRepository;
 import hr.algebra.verbose_couscous.dal.repositories.IRepositoryCollection;
+import hr.algebra.verbose_couscous.dal.repositories.RepositoryCollection;
 
 /**
  *
  * @author remi
  */
 public class DataService {
-
+    public static final DataService Instance = new DataService(RepositoryCollection.Instance);
+    
     private final IRepositoryCollection repositoryCollection;
 
     public DataService(IRepositoryCollection repositoryCollection) {
@@ -29,6 +32,10 @@ public class DataService {
 
     public <T extends Model> Collection<T> selectAll(Class<T> type) {
         return getRepository(type).selectAll();
+    }
+
+    public <T extends Model> Collection<T> selectWhere(Class<T> type, Predicate<T> predicate) {
+        return selectAll(type).stream().filter(predicate).toList();
     }
 
     public <T extends Model> Optional<T> selectById(Class<T> type, int id) {
