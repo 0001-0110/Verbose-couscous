@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package hr.algebra.verbose_couscous.dal.services;
 
 import java.io.IOException;
@@ -30,25 +26,29 @@ public class DatabaseService {
         TResult apply(TArg argument) throws TException;
     }
 
-    public interface SQLCheckedFunction<TArg, TResult> extends CheckedFunction<TArg, TResult, SQLException> { }
+    public interface SQLCheckedFunction<TArg, TResult> extends CheckedFunction<TArg, TResult, SQLException> {
+    }
 
-    public interface ResultHandler<TResult> extends SQLCheckedFunction<ResultSet, TResult> { }
+    public interface ResultHandler<TResult> extends SQLCheckedFunction<ResultSet, TResult> {
+    }
 
     @FunctionalInterface
     public interface CheckedConsumer<TArg, TException extends Exception> {
         void accept(TArg argument) throws TException;
     }
 
-    public interface SQLCheckedConsumer<TArg> extends CheckedConsumer<TArg, SQLException> { }
+    public interface SQLCheckedConsumer<TArg> extends CheckedConsumer<TArg, SQLException> {
+    }
 
-    public interface StatementInitializer extends SQLCheckedConsumer<CallableStatement> { }
+    public interface StatementInitializer extends SQLCheckedConsumer<CallableStatement> {
+    }
 
-    public final String PROPERTIESPATH = "/config/database.properties"; 
+    public final String PROPERTIESPATH = "/config/database.properties";
     public final String SERVERNAME = "SERVER";
     public final String DATABASENAME = "DATABASE";
     public final String USERNAME = "USERNAME";
     public final String PASSWORD = "PASSWORD";
-    
+
     private static final Properties properties = new Properties();
     private DataSource dataSource;
 
@@ -75,21 +75,29 @@ public class DatabaseService {
     }
 
     public void sendQuery(String procedure) {
-        sendQuery(procedure, statement -> { });
+        sendQuery(procedure, statement -> {
+        });
     }
 
     public void sendQuery(String procedure, StatementInitializer statementInitializer) {
-        sendQuery(procedure, statementInitializer, resultSet -> Optional.empty());
+        try (Connection connection = dataSource.getConnection();
+                CallableStatement statement = connection.prepareCall(procedure)) {
+
+            statementInitializer.accept(statement);
+            statement.execute();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
     }
 
-    public <TResult> Optional<TResult> sendQuery(String procedure, StatementInitializer statementInitializer, ResultHandler<TResult> resultHandler) {
+    public <TResult> Optional<TResult> sendQuery(String procedure, StatementInitializer statementInitializer,
+            ResultHandler<TResult> resultHandler) {
         try (Connection connection = dataSource.getConnection();
                 CallableStatement statement = connection.prepareCall(procedure)) {
 
             statementInitializer.accept(statement);
             return Optional.of(resultHandler.apply(statement.executeQuery()));
-        }
-        catch (SQLException exception) {
+        } catch (SQLException exception) {
             exception.printStackTrace();
             return Optional.empty();
         }
