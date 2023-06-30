@@ -9,7 +9,7 @@ CREATE TABLE Users
     IdUser INT PRIMARY KEY IDENTITY,
     Username NVARCHAR(30) NOT NULL,
     Permission INT NOT NULL,
-    PasswordHash NVARCHAR(256),
+    PasswordHash NVARCHAR(256)
 )
 GO
 
@@ -39,7 +39,7 @@ AS
 BEGIN
     INSERT INTO Users 
     VALUES (@Username, @Permission, @PasswordHash)
-    SET @IdUser = SCOPED_IDENTITY()
+    SET @IdUser = SCOPE_IDENTITY()
 END
 GO
 
@@ -51,8 +51,8 @@ CREATE PROCEDURE updateUser
 AS
 BEGIN
     UPDATE Users SET
-        Username = @Username
-        Permission = @Permission
+        Username = @Username,
+        Permission = @Permission,
         PasswordHash = @PasswordHash
     WHERE
         IdUser = @IdUser
@@ -115,7 +115,7 @@ AS
 BEGIN
     INSERT INTO Movies 
     VALUES (@Title, @MovieDescription, @ReleaseDate, @Duration, @ImagePath)
-    SET @IdMovie = SCOPED_IDENTITY()
+    SET @IdMovie = SCOPE_IDENTITY()
 END
 GO
 
@@ -129,10 +129,10 @@ CREATE PROCEDURE updateMovie
 AS
 BEGIN
     UPDATE Movies SET
-        Title = @Title
-        MovieDescription = @MovieDescription
-        ReleaseDate = @ReleaseDate
-        Duration = @Duration
+        Title = @Title,
+        MovieDescription = @MovieDescription,
+        ReleaseDate = @ReleaseDate,
+        Duration = @Duration,
         ImagePath = @ImagePath
     WHERE
         IdMovie = @IdMovie
@@ -187,7 +187,7 @@ AS
 BEGIN
     INSERT INTO Genres 
     VALUES (@GenreName)
-    SET @IdGenre = SCOPED_IDENTITY()
+    SET @IdGenre = SCOPE_IDENTITY()
 END
 GO
 
@@ -226,7 +226,7 @@ CREATE TABLE MovieGenre
     IdMovie INT,
     FOREIGN KEY (IdMovie) REFERENCES Movies(IdMovie),
     IdGenre INT,
-    FOREIGN KEY (IdGenre) REFERENCES Genre(IdGenre)
+    FOREIGN KEY (IdGenre) REFERENCES Genres(IdGenre)
 )
 GO
 
@@ -240,7 +240,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE selectMovieGenre
+CREATE PROCEDURE selectMovieGenres
 AS
 BEGIN
     SELECT * FROM MovieGenre
@@ -255,7 +255,7 @@ AS
 BEGIN
     INSERT INTO MovieGenre
     VALUES (@IdMovie, @IdGenre)
-    SET @Id = SCOPED_IDENTITY()
+    SET @Id = SCOPE_IDENTITY()
 END
 GO
 
@@ -266,7 +266,7 @@ CREATE PROCEDURE updateMovieGenre
 AS
 BEGIN
     UPDATE MovieGenre SET
-        IdMovie = @IdMovie
+        IdMovie = @IdMovie,
         IdGenre = @IdGenre
     WHERE
         Id = @Id
@@ -321,7 +321,7 @@ AS
 BEGIN
     INSERT INTO Actors 
     VALUES (@ActorName)
-    SET @IdActor = SCOPED_IDENTITY()
+    SET @IdActor = SCOPE_IDENTITY()
 END
 GO
 
@@ -374,7 +374,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE selectMovieActor
+CREATE PROCEDURE selectMovieActors
 AS
 BEGIN
     SELECT * FROM MovieActor
@@ -389,7 +389,7 @@ AS
 BEGIN
     INSERT INTO MovieActor 
     VALUES (@IdMovie, @IdActor)
-    SET @Id = SCOPED_IDENTITY()
+    SET @Id = SCOPE_IDENTITY()
 END
 GO
 
@@ -400,7 +400,7 @@ CREATE PROCEDURE updateMovieActor
 AS
 BEGIN
     UPDATE MovieActor SET
-        IdMovie = @IdMovie
+        IdMovie = @IdMovie,
         IdActor = @IdActor
     WHERE
         Id = @Id
@@ -455,7 +455,7 @@ AS
 BEGIN
     INSERT INTO Directors 
     VALUES (@DirectorName)
-    SET @IdDirector = SCOPED_IDENTITY()
+    SET @IdDirector = SCOPE_IDENTITY()
 END
 GO
 
@@ -523,7 +523,7 @@ AS
 BEGIN
     INSERT INTO MovieDirector 
     VALUES (@IdMovie, @IdDirector)
-    SET @Id = SCOPED_IDENTITY()
+    SET @Id = SCOPE_IDENTITY()
 END
 GO
 
