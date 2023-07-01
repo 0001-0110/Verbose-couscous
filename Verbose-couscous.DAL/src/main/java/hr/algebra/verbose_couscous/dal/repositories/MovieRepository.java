@@ -1,5 +1,6 @@
 package hr.algebra.verbose_couscous.dal.repositories;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -15,6 +16,7 @@ public class MovieRepository extends Repository<Movie> {
     private static final String NAME = "Title";
     private static final String DESCRIPTION = "MovieDescription";
     private static final String PUBLISHED = "ReleaseDate";
+    private static final String YEAR = "";
     private static final String DURATION = "Duration";
 
     public MovieRepository(DatabaseService databaseService) {
@@ -31,6 +33,7 @@ public class MovieRepository extends Repository<Movie> {
                         resultSet.getString(NAME),
                         resultSet.getString(DESCRIPTION),
                         resultSet.getString(PUBLISHED),
+                        resultSet.getInt(YEAR),
                         resultSet.getInt(DURATION)));
             return movies;
         };
@@ -46,6 +49,7 @@ public class MovieRepository extends Repository<Movie> {
                     resultSet.getString(NAME),
                     resultSet.getString(DESCRIPTION),
                     resultSet.getString(PUBLISHED),
+                    resultSet.getInt(YEAR),
                     resultSet.getInt(DURATION));
         };
 
@@ -55,6 +59,7 @@ public class MovieRepository extends Repository<Movie> {
     @Override
     public Movie insert(Movie model) {
         StatementInitializer statementInitializer = statement -> {
+            statement.registerOutParameter(ID, Types.INTEGER);
             statement.setString(NAME, model.Name);
             statement.setString(DESCRIPTION, model.Description);
             statement.setString(PUBLISHED, model.getPublishedDate());

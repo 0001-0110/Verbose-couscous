@@ -1,5 +1,6 @@
 package hr.algebra.verbose_couscous.dal.repositories;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -46,6 +47,7 @@ public class GenreRepository extends Repository<Genre> {
     @Override
     public Genre insert(Genre model) {
         StatementInitializer statementInitializer = statement -> {
+            statement.registerOutParameter(ID, Types.INTEGER);
             statement.setString(NAME, model.Name);
         };
 

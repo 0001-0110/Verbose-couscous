@@ -1,5 +1,6 @@
 package hr.algebra.verbose_couscous.dal.repositories;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -58,6 +59,7 @@ public class UserRepository extends Repository<User> {
     @Override
     public User insert(User model) {
         StatementInitializer statementInitializer = statement -> {
+            statement.registerOutParameter(ID, Types.INTEGER);
             statement.setString(USERNAME, model.Username);
             statement.setString(PASSWORDHASH, model.PasswordHash);
             statement.setInt(PERMISSION, model.Permission.ToInt());

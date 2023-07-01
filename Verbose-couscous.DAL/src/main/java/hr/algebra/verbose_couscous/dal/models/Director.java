@@ -14,6 +14,11 @@ public class Director extends Person {
         return movieRelations.getRelatedMovies(Id);
     }
 
+    public Director(String name) {
+        super(name);
+        movieRelations = new MovieDirectorRelations();
+    }
+
     public Director(int id, String name) {
         super(id, name);
         movieRelations = new MovieDirectorRelations();

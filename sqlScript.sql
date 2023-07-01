@@ -81,6 +81,7 @@ CREATE TABLE Movies
     IdMovie INT PRIMARY KEY IDENTITY,
     Title NVARCHAR(64) NOT NULL,
     MovieDescription NVARCHAR(MAX) NULL,
+	MovieYear INT NOT NULL,
     ReleaseDate INT NOT NULL,
     Duration INT NOT NULL,
     ImagePath NVARCHAR(512) NOT NULL
@@ -107,6 +108,7 @@ GO
 CREATE PROCEDURE createMovie
     @Title NVARCHAR(64),
     @MovieDescription NVARCHAR(MAX),
+	@MovieYear INT,
     @ReleaseDate INT,
     @Duration INT,
     @ImagePath NVARCHAR(512),
@@ -114,7 +116,7 @@ CREATE PROCEDURE createMovie
 AS
 BEGIN
     INSERT INTO Movies 
-    VALUES (@Title, @MovieDescription, @ReleaseDate, @Duration, @ImagePath)
+    VALUES (@Title, @MovieDescription, @MovieYear, @ReleaseDate, @Duration, @ImagePath)
     SET @IdMovie = SCOPE_IDENTITY()
 END
 GO
@@ -122,6 +124,7 @@ GO
 CREATE PROCEDURE updateMovie
     @Title NVARCHAR(64),
     @MovieDescription NVARCHAR(MAX),
+	@MovieYear INT,
     @ReleaseDate INT,
     @Duration INT,
     @ImagePath INT,
@@ -131,6 +134,7 @@ BEGIN
     UPDATE Movies SET
         Title = @Title,
         MovieDescription = @MovieDescription,
+		MovieYear = @MovieYear,
         ReleaseDate = @ReleaseDate,
         Duration = @Duration,
         ImagePath = @ImagePath
@@ -283,7 +287,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE clearMovieGenre
+CREATE PROCEDURE clearMovieGenres
 AS
 BEGIN
     DELETE FROM MovieGenre
@@ -417,7 +421,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE clearMovieActor
+CREATE PROCEDURE clearMovieActors
 AS
 BEGIN
     DELETE FROM MovieActor
@@ -551,7 +555,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE clearMovieDirector
+CREATE PROCEDURE clearMovieDirectors
 AS
 BEGIN
     DELETE FROM MovieDirector
@@ -564,9 +568,10 @@ BEGIN
     EXEC clearUsers
     EXEC clearMovies
     EXEC clearGenres
+	EXEC clearMovieGenres
     EXEC clearActors
-    EXEC clearMovieActor
+    EXEC clearMovieActors
     EXEC clearDirectors
-    EXEC clearMovieDirector
+    EXEC clearMovieDirectors
 END
 GO

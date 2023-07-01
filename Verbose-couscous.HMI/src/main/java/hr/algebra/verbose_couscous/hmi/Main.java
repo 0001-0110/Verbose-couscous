@@ -11,7 +11,6 @@ package hr.algebra.verbose_couscous.hmi;
 public class Main {
 
     public static void main(String[] args) {
-        MainFrame mainFrame = new MainFrame();
-        mainFrame.main(args);
+        MainFrame.main(args);
     }
 }

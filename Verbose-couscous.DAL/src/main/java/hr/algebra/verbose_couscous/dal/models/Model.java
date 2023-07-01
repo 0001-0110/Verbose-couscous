@@ -8,6 +8,8 @@ public abstract class Model {
 
     public int Id;
 
+    protected Model() { }
+
     protected Model(int id) {
         Id = id;
     }

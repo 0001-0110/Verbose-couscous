@@ -1,25 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package hr.algebra.verbose_couscous.bll.services;
 
-import hr.algebra.verbose_couscous.dal.models.User;
 import java.util.Collection;
+import java.util.Optional;
+
+import hr.algebra.verbose_couscous.bll.models.Credentials;
+import hr.algebra.verbose_couscous.dal.models.User;
 
 /**
  *
  * @author remi
  */
-public class AuthenticationService {
+public class AuthenticationService implements IAuthenticationService {
 
-    public static final AuthenticationService Instance = new AuthenticationService(DataService.Instance);
+    private final IDataService dataService;
 
-    private final DataService dataService;
+    private Optional<User> user;
 
-    public User User;
+    @Override
+    public User getUser() {
+        return user.get();
+    }
 
-    private AuthenticationService(DataService dataService) {
+    public AuthenticationService(IDataService dataService) {
         this.dataService = dataService;
     }
 
@@ -27,16 +29,26 @@ public class AuthenticationService {
         throw new UnsupportedOperationException();
     }
 
-    public boolean TryAuthenticate(String username, String password) {
-        Collection<User> users = dataService.selectWhere(User.class, user -> 
-                user.Username == username 
-                && user.PasswordHash == getPasswordHash(password));
+    @Override
+    public boolean isAuthenticated() {
+        return user.isPresent();
+    }
+
+    @Override
+    public boolean tryAuthenticate(Credentials credentials) {
+        Collection<User> users = dataService.selectWhere(User.class, user -> user.Username == credentials.Username
+                && user.PasswordHash == getPasswordHash(credentials.Password));
         if (users.stream().count() != 1)
             // If there is no user corresponding, you can't connect
             // If there is multiple correcponding users, we have a problem
             return false;
 
-        User = users.stream().findFirst().get();
+        user = users.stream().findFirst();
         return true;
+    }
+
+    @Override
+    public boolean tryRegister(Credentials credentials) {
+        throw new UnsupportedOperationException();
     }
 }

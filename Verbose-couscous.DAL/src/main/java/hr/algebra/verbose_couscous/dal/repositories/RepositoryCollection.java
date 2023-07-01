@@ -110,6 +110,7 @@ public class RepositoryCollection implements IRepositoryCollection {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Model> IRepository<T> getRepository(Class<T> type) {
         return (IRepository<T>)repositories.get(type);
     }

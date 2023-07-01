@@ -1,5 +1,6 @@
 package hr.algebra.verbose_couscous.dal.repositories;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -64,6 +65,7 @@ public abstract class ModelRelationRepository<TRelation extends ModelRelation<TM
     @Override
     public TRelation insert(TRelation model) {
         StatementInitializer statementInitializer = statement -> {
+            statement.registerOutParameter(ID, Types.INTEGER);
             statement.setInt(IDMODEL1, model.IdModel1);
             statement.setInt(IDMODEL2, model.IdModel2);
         };

@@ -15,7 +15,19 @@ public abstract class ModelRelation<TModel1 extends Model, TModel2 extends Model
     public int IdModel1;
     public int IdModel2;
 
-    public ModelRelation(IRepositoryCollection repositoryCollection, int id, int idModel1, IRepository<TModel1> repository1, int idModel2, IRepository<TModel2> repository2) {
+    public ModelRelation(int idModel1, IRepository<TModel1> repository1,
+            int idModel2, IRepository<TModel2> repository2) {
+
+        this.repository1 = repository1;
+        this.repository2 = repository2;
+
+        this.IdModel1 = idModel1;
+        this.IdModel2 = idModel2;
+    }
+
+    public ModelRelation(int id, int idModel1,
+            IRepository<TModel1> repository1, int idModel2, IRepository<TModel2> repository2) {
+
         super(id);
 
         this.repository1 = repository1;

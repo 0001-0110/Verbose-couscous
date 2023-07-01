@@ -41,17 +41,28 @@ public class Movie extends Model {
         return directorRelations.getRelatedDirectors(Id);
     }
 
-    public Movie(int id, String name, String description, String published, int duration) {
-        this(id, name, description, LocalDateTime.parse(published, dateFormatter), duration);
+    public Movie(String name, String description, LocalDateTime published, int year, int duration) {
+        Name = name;
+        Description = description;
+        PublishedDateTime = published;
+        Duration = duration;
+        Year = year;
+        genreRelations = new MovieGenreRelations();
+        actorRelations = new MovieActorRelations();
+        directorRelations = new MovieDirectorRelations();
     }
 
-    public Movie(int id, String name, String description, LocalDateTime published, int duration) {
+    public Movie(int id, String name, String description, String published, int year, int duration) {
+        this(id, name, description, LocalDateTime.parse(published, dateFormatter), year, duration);
+    }
+
+    public Movie(int id, String name, String description, LocalDateTime published, int year, int duration) {
         super(id);
         Name = name;
         Description = description;
         PublishedDateTime = published;
         Duration = duration;
-        Year = PublishedDateTime.getYear();
+        Year = year;
         genreRelations = new MovieGenreRelations();
         actorRelations = new MovieActorRelations();
         directorRelations = new MovieDirectorRelations();

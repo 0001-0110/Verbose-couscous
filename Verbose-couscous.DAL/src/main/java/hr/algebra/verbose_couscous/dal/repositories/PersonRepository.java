@@ -9,6 +9,7 @@ import hr.algebra.verbose_couscous.dal.models.Person;
 import hr.algebra.verbose_couscous.dal.services.DatabaseService;
 import hr.algebra.verbose_couscous.dal.services.DatabaseService.ResultHandler;
 import hr.algebra.verbose_couscous.dal.services.DatabaseService.StatementInitializer;
+import java.sql.Types;
 
 public abstract class PersonRepository<T extends Person> extends Repository<T> {
 
@@ -60,6 +61,7 @@ public abstract class PersonRepository<T extends Person> extends Repository<T> {
     @Override
     public T insert(T model) {
         StatementInitializer statementInitializer = statement -> {
+            statement.registerOutParameter(ID, Types.INTEGER);
             statement.setString(NAME, model.Name);
         };
 

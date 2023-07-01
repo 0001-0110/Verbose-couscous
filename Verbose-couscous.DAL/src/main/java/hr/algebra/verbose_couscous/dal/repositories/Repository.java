@@ -10,6 +10,7 @@ import hr.algebra.verbose_couscous.dal.models.Model;
 import hr.algebra.verbose_couscous.dal.services.DatabaseService;
 import hr.algebra.verbose_couscous.dal.services.DatabaseService.ResultHandler;
 import hr.algebra.verbose_couscous.dal.services.DatabaseService.StatementInitializer;
+import java.util.Collections;
 
 /**
  *
@@ -36,8 +37,9 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
         selectByIdProcedure = getProcedure("select" + modelName, 1);
         // No argument is needed when selecting everything
         selectAllProcedure = getProcedure("select" + modelName + "s", 0);
-        // When creating or updating, every property, plus the id, are needed
+        // When creating, every property is needed and the id is an output
         insertProcedure = getProcedure("create" + modelName, propertyCount + 1);
+        // When updating, every property is needed plus the id
         updateProcedure = getProcedure("update" + modelName, propertyCount + 1);
         // We only need an id to delete a model
         deleteProcedure = getProcedure("delete" + modelName, 1);
@@ -52,8 +54,8 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
     // Create the prepared statements to call the procedures
     private String getProcedure(String procedureName, int argumentCount) {
         if (argumentCount <= 0)
-            return String.format("", procedureName);
-        return String.format("{ CALL %s }", procedureName, "(" + String.join(",", "?".repeat(argumentCount)) + ")");
+            return String.format("{ CALL %s }", procedureName);
+        return String.format("{ CALL %s %s }", procedureName, "(" + String.join(",", Collections.nCopies(argumentCount, "?")) + ")");
     }
 
     private Optional<Collection<T>> replaceDuplicates(Optional<Collection<T>> models) {
@@ -101,20 +103,20 @@ public abstract class Repository<T extends Model> implements IRepository<T> {
 
     // Return the id of the new model
     protected Optional<Integer> _insert(StatementInitializer statementInitializer) {
-        return databaseService.sendQuery(insertProcedure, statementInitializer, resultSet -> resultSet.getInt(1));
+        return databaseService.sendUpdate(insertProcedure, statementInitializer, resultSet -> resultSet.getInt(1));
     }
 
     protected void _update(StatementInitializer statementInitializer) {
-        databaseService.sendQuery(updateProcedure, statementInitializer);
+        databaseService.sendUpdate(updateProcedure, statementInitializer);
     }
 
     @Override
     public void delete(int id) {
-        databaseService.sendQuery(deleteProcedure, statement -> statement.setInt(1, id));
+        databaseService.sendUpdate(deleteProcedure, statement -> statement.setInt(1, id));
     }
 
     @Override
     public void clear() {
-        databaseService.sendQuery(clearProcedure);
+        databaseService.sendUpdate(clearProcedure);
     }
 }

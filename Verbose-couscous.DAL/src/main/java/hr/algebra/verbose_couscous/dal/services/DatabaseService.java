@@ -74,19 +74,24 @@ public class DatabaseService {
         return dataSource;
     }
 
-    public void sendQuery(String procedure) {
-        sendQuery(procedure, statement -> {
-        });
+    public void sendUpdate(String procedure) {
+        sendUpdate(procedure, statement -> { });
     }
 
-    public void sendQuery(String procedure, StatementInitializer statementInitializer) {
+    public void sendUpdate(String procedure, StatementInitializer statementInitializer) {
+        sendUpdate(procedure, statementInitializer, resultSet -> 0);
+    }
+
+    public <TResult> Optional<TResult> sendUpdate(String procedure, StatementInitializer statementInitializer, ResultHandler<TResult> resultHandler) {
         try (Connection connection = dataSource.getConnection();
                 CallableStatement statement = connection.prepareCall(procedure)) {
 
             statementInitializer.accept(statement);
-            statement.execute();
+            statement.executeUpdate();
+            return Optional.of(resultHandler.apply(statement.getResultSet()));
         } catch (SQLException exception) {
             exception.printStackTrace();
+            return Optional.empty();
         }
     }
 

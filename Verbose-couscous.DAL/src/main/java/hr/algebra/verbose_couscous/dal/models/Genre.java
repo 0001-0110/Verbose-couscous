@@ -19,6 +19,11 @@ public class Genre extends Model {
         return movieRelations.getRelatedModels1(Id);
     }
 
+    public Genre(String name) {
+        Name = name;
+        movieRelations = new MovieGenreRelations();
+    }
+
     public Genre(int id, String name) {
         super(id);
         Name = name;
